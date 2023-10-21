@@ -130,7 +130,8 @@ update(){
 #    mkdir -p /home/setup/files;
     $s git config --global user.name "thadddd";
     $s git config --global user.email "jasonauthement@gmail.com";
-    $s apt install -y linux-headers-$(uname -r);
+    $s apt install -y linux-headers-$(uname -r) aptitude timeshift;
+    $s timeshift --create;
     pkgINST;
 }
 
@@ -164,7 +165,7 @@ menu(){
     echo "5 - Ubertooth";
     echo "6 - Kismet";
     echo "9 - EXIT";
-    read -p "Which Step ?" menans1 -r;
+    read -p "Which Step ?" menans1;
         while true; do
             case $menans1 in
                 1) STEP=1;
