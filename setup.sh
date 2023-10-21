@@ -1,4 +1,4 @@
-#! /usr/bin/bash
+#!/usr/bin/bash
 
 # Setup for warTruck
 
@@ -18,6 +18,7 @@ conf=/home/setup/conf
 suin='sudo aptitude install -y'
 suinn='sudo aptitude install'
 STEP=0
+export='export PYTHONPATH=/usr/local/lib/python3/dist-packages/'
 package=(mokutil build-essential bc dkms libelf-dev rfkill iw cmake libusb-1.0-0-dev scons libncurses-dev python-dev pps-tools git-core asciidoctor python3-matplotlib manpages-dev pkg-config python3-distutils ncurses-dev gnuplot libusb-dev python3-serial libcxx-serial-dev make gcc g++ libbluetooth-dev python3-numpy python3-qtpy wireshark wireshark-dev libwireshark-dev libmosquitto-dev git libwebsockets-dev zlib1g-dev libnl-3-dev libnl-genl-3-dev libcap-dev libpcap-dev libnm-dev libdw-dev libsqlite3-dev libprotobuf-dev libprotobuf-c-dev protobuf-compiler protobuf-c-compiler libsensors4-dev python3 python3-setuptools python3-protobuf python3-requests python3-usb python3-dev python3-websockets librtlsdr0 libubertooth-dev libbtbb-dev)
 
 
@@ -26,19 +27,21 @@ package=(mokutil build-essential bc dkms libelf-dev rfkill iw cmake libusb-1.0-0
 #####
 
 gps(){
+    cd ~ || return;
+    $export;
     $rtn;
     wget http://download.savannah.gnu.org/releases/gpsd/gpsd-3.25.tar.gz;
     tar -xzf gpsd-3.25.tar.gz;
     cd gpsd-3.25 || return;
-    export PYTHONPATH=/usr/local/lib/python3/dist-packages/;
     $s scons target_python=python3.9;
-    $s scons check target_python=python3.9;
-    $s scons install target_python=python3.9;
+    $s scons check;
+    $s scons install;
     $s cp /etc/default/gpsd /etc/default/gpsd.bk;
     $s cp $conf/gpsd /etc/default/gpsd;
     $s systemctl enable gpsd;
     $s systemctl enable gpsd.socket;
     $s service gpsd start;
+    $s touch /home/setup/c/3;
     menu;
 }
 
@@ -53,6 +56,7 @@ rtl(){
     ldconfig;
     $s cp ../rtl-sdr.rules /etc/udev/rules.d/;
     $s cp $conf/blacklist-dvb.conf /etc/modprobe.d/blacklist-dvb.conf;
+    $s touch /home/setup/c/4;
     menu;
 }
 
@@ -69,6 +73,7 @@ wifi(){
     git clone https://github.com/morrownr/8814au.git;
     cd 8814au || return;
     ./install-driver.sh;
+    $s touch /home/setup/c/2;
     menu;
 }
 
@@ -93,6 +98,7 @@ uber(){
     $s make;
     $s make install;
     $s ldconfig;
+    $s touch /home/setup/c/5;
 #    $rtn;
 #    cd libbtbb-2020-12-R1/wireshark/plugins/btbb || return;
 #    $s mkdir build;
@@ -119,7 +125,8 @@ kism(){
     $s make suidinstall;
     $s usermod -aG kismet dddd;
     $s $conf/kismet.conf;
-    menu; 
+    $s touch /home/setup/c/6;
+    menu;
 }
 
 update(){
@@ -147,15 +154,16 @@ update(){
 pkgINST(){
     for pkg in "${package[@]}"
         do
-        echo "Checking for $pkg";
+        printf \e[0;31m "Checking for" \e[0;33m "$pkg";
             if [ -f /usr/bin/"$pkg" ]
                 then
-                    echo "$pkg is already installed";
+                    printf \e[0;36m "$pkg" "is already installed";
                     sleep 2;
                 else
                     $suin "$pkg";
             fi
     done
+    $s touch /home/setup/c/1
     menu;
 }
 
@@ -173,6 +181,7 @@ menu(){
     echo "4 - RTL-SDR";
     echo "5 - Ubertooth";
     echo "6 - Kismet";
+    echo "7 - REBOOT";
     echo "9 - EXIT";
     read -p "Which Step ?" menans1;
         while true; do
@@ -189,13 +198,13 @@ menu(){
                     uber;;
                 6) STEP=6;
                     kism;;
-                9) STEP=9;
-                    exit 0;;
+                7) $s reboot;
+                9) exit 0;;
                 *) echo -ne "WRONG ANSWER";
                     sleep 3;
                     menu;;
             esac
         done
 }
-
-menu
+sudo mkdir -p /home/setup/c;
+menu;
