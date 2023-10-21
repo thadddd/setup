@@ -18,7 +18,7 @@ conf=/home/setup/conf
 suin='sudo aptitude install -y'
 suinn='sudo aptitude install'
 STEP=0
-package=(build-essential bc dkms libelf-dev rfkill iw cmake libusb-1.0-0-dev scons libncurses-dev python-dev pps-tools git-core asciidoctor python3-matplotlib manpages-dev pkg-config python3-distutils ncurses-dev gnuplot libusb-dev python3-serial libcxx-serial-dev make gcc g++ libbluetooth-dev python3-numpy python3-qtpy wireshark wireshark-dev libwireshark-dev libmosquitto-dev git libwebsockets-dev zlib1g-dev libnl-3-dev libnl-genl-3-dev libcap-dev libpcap-dev libnm-dev libdw-dev libsqlite3-dev libprotobuf-dev libprotobuf-c-dev protobuf-compiler protobuf-c-compiler libsensors4-dev python3 python3-setuptools python3-protobuf python3-requests python3-usb python3-dev python3-websockets librtlsdr0 libubertooth-dev libbtbb-dev)
+package=(mokutil build-essential bc dkms libelf-dev rfkill iw cmake libusb-1.0-0-dev scons libncurses-dev python-dev pps-tools git-core asciidoctor python3-matplotlib manpages-dev pkg-config python3-distutils ncurses-dev gnuplot libusb-dev python3-serial libcxx-serial-dev make gcc g++ libbluetooth-dev python3-numpy python3-qtpy wireshark wireshark-dev libwireshark-dev libmosquitto-dev git libwebsockets-dev zlib1g-dev libnl-3-dev libnl-genl-3-dev libcap-dev libpcap-dev libnm-dev libdw-dev libsqlite3-dev libprotobuf-dev libprotobuf-c-dev protobuf-compiler protobuf-c-compiler libsensors4-dev python3 python3-setuptools python3-protobuf python3-requests python3-usb python3-dev python3-websockets librtlsdr0 libubertooth-dev libbtbb-dev)
 
 
 #####
@@ -124,6 +124,7 @@ kism(){
 
 update(){
     $s apt update;
+    $s apt dist-upgrade -y;
     $s apt full-upgrade -y;
     $s apt autoremove -y;
     $s chmod ugo+rwx /home/ -R;
