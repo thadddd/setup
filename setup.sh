@@ -33,14 +33,15 @@ gps(){
     wget http://download.savannah.gnu.org/releases/gpsd/gpsd-3.25.tar.gz;
     tar -xzf gpsd-3.25.tar.gz;
     cd gpsd-3.25 || return;
+    sudo nano ~/.bashrc;
     $s scons target_python=python3.9;
     $s scons check;
-    $s scons install;
-    $s cp /etc/default/gpsd /etc/default/gpsd.bk;
-    $s cp $conf/gpsd /etc/default/gpsd;
-    $s systemctl enable gpsd;
-    $s systemctl enable gpsd.socket;
-    $s service gpsd start;
+    $s scons install udev-install target_python=python3.9;
+#    $s cp /etc/default/gpsd /etc/default/gpsd.bk;
+#    $s cp $conf/gpsd /etc/default/gpsd;
+#    $s systemctl enable gpsd;
+#    $s systemctl enable gpsd.socket;
+#    $s service gpsd start;
     $s touch /home/setup/c/3;
     menu;
 }
@@ -124,7 +125,7 @@ kism(){
     $s make;
     $s make suidinstall;
     $s usermod -aG kismet dddd;
-    $s $conf/kismet.conf;
+#   $s $conf/kismet.conf;
     $s touch /home/setup/c/6;
     menu;
 }
@@ -154,14 +155,15 @@ update(){
 pkgINST(){
     for pkg in "${package[@]}"
         do
-        printf \e[0;31m "Checking for" \e[0;33m "$pkg";
-            if [ -f /usr/bin/"$pkg" ]
-                then
-                    printf \e[0;36m "$pkg" "is already installed";
-                    sleep 2;
-                else
-                    $suin "$pkg";
-            fi
+#       printf \e[0;31m "Checking for" \e[0;33m "$pkg";
+#            if [ -f /usr/bin/"$pkg" ]
+#                then
+#                    printf \e[0;36m "$pkg" "is already installed";
+#                    sleep 2;
+#                else
+#                    $suin "$pkg";
+#            fi
+            $suinn $pkg;
     done
     $s touch /home/setup/c/1
     menu;
@@ -198,7 +200,7 @@ menu(){
                     uber;;
                 6) STEP=6;
                     kism;;
-                7) $s reboot;
+                7) $s reboot;;
                 9) exit 0;;
                 *) echo -ne "WRONG ANSWER";
                     sleep 3;
